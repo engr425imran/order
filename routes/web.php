@@ -14,10 +14,10 @@ use App\Http\Controllers\PayController;
 |
 */
 
-Route::view('/', 'landing');
-// Route::get('getPayrollView', [PayController::class, 'index']);
-Route::get('createPaySlips', [PayController::class, 'create']);
+Route::view('/', 'auth.login');
+Route::view('/landing', 'landing');
 Auth::routes();
 Route::resource('pays', PayController::class);
 Route::post('savePaySlip', [PayController::class, 'store']);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::view('admin', 'admin.admin');
