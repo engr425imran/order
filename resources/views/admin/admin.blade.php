@@ -15,35 +15,22 @@
     <!-- Bootstrap core CSS -->
 <link href="{{asset('css/app.css')}}" rel="stylesheet">
 <style>
-    .{
         .signout {
             color:white;
         }
-    }
+        .sidebrar {
+          text-color: black;
+        }
 </style>
     
     <!-- Custom styles for this template -->
     <link href="{{asset('css/adminDashboard.css')}}" rel="stylesheet">
   </head>
   <body>
-    
-<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Company name</a>
-  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-  <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-        <form action="{{url('/logout')}}" method="post">@csrf
-      <button type="submit" class="nav-link signout bg-dark">Sign Out</button></form>
-    </li>
-  </ul>
-</nav>
-
+    @include('includes.header')
 <div class="container-fluid">
   <div class="row">
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar bg-light sidebar collapse">
       <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column">
           <li class="nav-item">
@@ -93,15 +80,14 @@
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Dashboard</h1>
         @if(Session::has('news'))
-        <div class="alert alert-success">
+        <div class="alert alert-success" role="alert">
           <p>Leave Application Submitted Succsessfull</p>
         </div>
         @endif
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
-            <a href="{{url('/leaves/create')}}" class="btn btn-sm btn-outline-secondary">Apply</a>
-            <button type="button" class="btn btn-sm btn-outline-secondary">Off Sick</button>
-            {{-- <button type="button" class="btn btn-sm btn-outline-secondary">Apply</button> --}}
+            <a href="{{url('/leaves/create')}}" class="btn btn-sm btn-outline-secondary">Apply for Leave </a>
+            
           </div>
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
             <span data-feather="calendar"></span>
@@ -109,26 +95,34 @@
           </button>
         </div>
       </div>
-      <div class="row">
-        @php
-         $user=App\Models\Leave::Where('email', auth()->user()->email)->first();    
-        @endphp
-        <div class="col-md-4 ">
-          <div class="card">
-            <div class="card-header">
-              {{ auth()->user()->name }} has Submiited leave Application
-            </div>
-            <div class="card-body">
-              <h5 class="card-title"> Reason :{{ $user->comment }}</h5>
-              <h3> Start Date :{{ $user->enddate}}</h3>
-              <h3>End Date : {{ $user->enddate}}</h3>
-             <br><br><br>
-            </div>
+      @php
+        $leaves=App\Models\Leave::where('email', auth()->user()->email)->get();      @endphp
+      @foreach ($leaves as $item)
+        @if(!$item->status)
+          <div class="row">
+          
+            <div class="col-md-4 ">
+              <div class="card">
+                <div class="card-header">
+                  {{ auth()->user()->name }} has Submiited item Application
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title"> Reason :{{ $item->comment }}</h5>
+                  <h3> Start Date :{{ $item->startdate}}</h3>
+                  <h3>End Date : {{ $item->enddate}}</h3>
+                <br><br><br>
+                </div>
+              </div>
+            </div>          
           </div>
-        </div>
-        
-      </div>
-   
+          @endif
+            <div id="hide" class="alert alert-success" role="alert">
+                <h3 class="remveMessage">Your leave application has been approved  <i class="fa fa-times" onclick="hide()" aria-hidden="true">reome me</i> </h3>
+            </div>
+
+        @endforeach
+
+   {{-- @endif --}}
     <div class="container">
       <div class="row">
         <div class="col-md-5">
@@ -145,18 +139,34 @@
         </div>       
       </div>
       <div class="row">
+        
         <div class="col-md-8">
-          <table class="table  table-dark">
+          <h3> Employee Payslips :<h3>
+          <table class="table  mt-5 table-dark table-striped">
             <thead>
               <tr>
                 <tr>
                   <th># ID</th>
+                  <th>Name</th>
                   <th>Type</th>
                   <th>First Date</th>
                   <th>End Date</th>
                 </tr>
               </tr>
             </thead>
+            @php
+               $slips= App\Models\Pay::where('employee_id', auth()->user()->id)->get();
+            @endphp
+            @foreach ($slips as $item)
+                <tbody>
+                  <td>{{ $loop->index + 1 }}</td>
+                  <td>{{ $item->name }}</td>
+                  <td>{{ $item->type }}</td>
+                  <td>{{ $item->firstPeriodEndDate }}</td>
+                  <td>{{ $item->lastDayMonth }}</td>
+                </tbody>
+            @endforeach
+            
 
           </table>
 
@@ -178,7 +188,7 @@
       @endphp
       @foreach ($leave as $item)
         @if(Session::has('applicationapproved'))
-        <div class="alert alert-success">
+        <div class="alert alert-success" role="alert">
           <p>Leave Application Approved </p>
         </div>
         @endif
@@ -251,7 +261,12 @@
     </main>
   </div>
 </div>
-
+<script>
+  function hide(){
+    document.getElementById("hide").style.display = "none";
+  }
+  
+</script>
 
     {{-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> --}}
       <script src="{{asset('js/app.js')}}"></script>        

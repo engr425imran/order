@@ -17,9 +17,9 @@ use App\Http\Controllers\LeaveController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::view('/', 'auth.login');
-Route::view('/landing', 'landing');
+Route::get('/login',[HomeController::class, 'login'])->middleware('guest');
+// Route::view('/', 'auth.login');
+Route::view('/', 'landing');
 Auth::routes();
 Route::resource('leaves', LeaveController::class);
 Route::resource('pays', PayController::class);
@@ -28,3 +28,13 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::view('admin', 'admin.admin');
 
 Route::get('approveLeave/{id}', [LeaveController::class ,'approveleave']);
+Route::get('/check', function(){
+    $leaves=App\Models\Leave::where('email', auth()->user()->email)->get();
+    foreach($leaves as $leave){
+        if(!$leave->status){
+        echo $leave->type;
+        }
+    }
+
+});
+  
