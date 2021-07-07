@@ -87,8 +87,9 @@
       
       </div>
     </nav>
-    @role( 'Employee' )
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    @role( 'Employee' )
+   
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Dashboard</h1>
         @if(Session::has('news'))
@@ -115,11 +116,12 @@
         <div class="col-md-4 ">
           <div class="card">
             <div class="card-header">
-              {{ auth()->user()->name }} Submiited leave Application
+              {{ auth()->user()->name }} has Submiited leave Application
             </div>
             <div class="card-body">
-              <h5 class="card-title">Application Comments</h5>
-              <h2>{{ $user->enddate}}</h2>
+              <h5 class="card-title"> Reason :{{ $user->comment }}</h5>
+              <h3> Start Date :{{ $user->enddate}}</h3>
+              <h3>End Date : {{ $user->enddate}}</h3>
              <br><br><br>
             </div>
           </div>
@@ -168,33 +170,42 @@
   
       @endphp
       @foreach ($leave as $item)
-      <div class="card mt-4">
-        <div class="card-header">
-          @php    
-          $applicats=App\Models\User::where('email', $item->email)->first();
-          @endphp
-          {{ $applicats->name }} has  apply for leave Application
+        @if(Session::has('applicationapproved'))
+        <div class="alert alert-success">
+          <p>Leave Application Approved </p>
         </div>
-        
-        <div class="card-body bg-light">        
-          <h3 class="card-title"> Start Date :{{ $item->startdate }} </h5>
-          <h3>End Date {{ $item->enddate}}</h2>
-         <a href="{{url('approveLeave/'.$item->id)}}" class="btn btn-primary">Approve</a>
-        </div>
-      </div>
+        @endif
+        @if(!$item->status)
+          <div class="card mt-4">
+            <div class="card-header">
+              @php    
+              $applicats=App\Models\User::where('email', $item->email)->first();
+              @endphp
+              {{ $applicats->name }} has  apply for leave Application
+            </div>
+          
+            
+            <div class="card-body bg-light">        
+              <h3 class="card-title"> Start Date :{{ $item->startdate }} </h5>
+              <h3>End Date {{ $item->enddate}}</h2>
+            <a href="{{url('approveLeave/'.$item->id)}}" class="btn btn-primary">Approve</a>
+            </div>
+          </div>
+
+          @else
+          <div class="container mt-5 ">
+            <div class="row">
+              <div class="row">
+                <p>No Application Has Submiited yet</p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+         @endif
       @endforeach
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <p>sdsds</p>
-          </div>
-          <div class="col-md-4">
-            ddfd
-          </div>
-
-        </div>
-
-      </div>
       
       
       <div class="table-responsive">
@@ -205,7 +216,6 @@
               <th>Type</th>
               <th>start Date</th>
               <th>End Date</th>
-              <th>&nbsp</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -213,13 +223,18 @@
             $leaves = App\Models\Leave::orderBy('created_at', 'ASC')->get();    
           @endphp
           @foreach ($leaves as $item)
+          
           <tbody>
             <tr>
               <td> {{ $loop->index +1 }}</td>
               <td>{{ $item->type }}</td>
               <td> {{ $item->startdate}}</td>
               <td>{{ $item->enddate }}</td>
-              <td> <a href="{{url('approveLeave/'.$item->id)}}" class="btn btn-danger">Approve</a></td> 
+              @if($item->status)
+              <td> Approved</td>
+              @else 
+              <td><a href="{{url('approveLeave/'.$item->id)}}" class="btn btn-danger">Approve</a></td>
+              @endif 
             </tr>
             @endforeach
           </tbody>

@@ -46,7 +46,7 @@ class LeaveController extends Controller
             'email'=> auth()->user()->email,
         ]);
         session()->flash('news', true);
-        return view('admin.admin' );
+        return redirect('/leaves' );
     }
 
     /**
@@ -92,5 +92,13 @@ class LeaveController extends Controller
     public function destroy(Leave $leave)
     {
         //
+    }
+    public function approveleave($id) {
+        $leaveapplication =  Leave::find($id);
+        $leaveapplication->status= true;
+        $leaveapplication->save();
+        session()->flash('applicationapproved', true);
+        return redirect('/leaves');
+
     }
 }
