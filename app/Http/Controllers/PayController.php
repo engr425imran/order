@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pay;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class PayController extends Controller
 {
@@ -24,7 +26,9 @@ class PayController extends Controller
      */
     public function create()
     {
-        return view('payslips.createPayslips');
+        $users = User::role('Employee')->get();
+        return view('payslips.createPayslips', ['users'=>$users]);
+      
     }
 
     /**
@@ -41,7 +45,8 @@ class PayController extends Controller
             'type'=>$request->paycycletype,
             'firstPeriodEndDate' =>$request->firstPeriodEndDate,
             'lastDayMonth'=> $request->lastDayMonth,
-            'status'=>1
+            'employee_id'=> $request->employee,
+            
         ]);
         return redirect('pays');
     }

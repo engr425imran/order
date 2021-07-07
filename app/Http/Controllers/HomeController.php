@@ -25,11 +25,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Permission::create(['name'=> 'apply for leave']);
-        //  Role::create(['name'=> 'Admin']);
-        // $role = Role::findByName('Payroll Admin');
-        // $role->givePermissionTo('will see payslips');
+        // Permission::create(['name'=> 'Will Generate Payslips']);
+       
+        //  Role::create(['name'=> 'Payroll Admin']);
+        $role = Role::findByName('Payroll Admin');
+        $role->givePermissionTo('Will Generate Payslips');
         // return view('home');
+      
         return view('admin.admin');
     }
     

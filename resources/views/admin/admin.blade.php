@@ -131,12 +131,10 @@
    
     <div class="container">
       <div class="row">
-      
         <div class="col-md-5">
           <h2 class="bg-dark text-light">Leave</h2>
           <h4>12:00</h4>
           <span>Annual leave day</span>
-
         </div>
         <div class="col-md-5">
           <h2 class="bg-dark text-light">Inbox</h2>
@@ -144,16 +142,25 @@
           <div class="mt-5">
             <p style="width:100%; height:70px;">No data</p>
           </div>
-          <div class="row mt-5">
-            <div class="col-md-5">
-              <h3 class="bg-dark text-light">Teams</h3>
-              <h4>Subcription</h4>
-              <input type="text" placeholder="search here ...">
-            </div>
-          </div>
-        </div>
+        </div>       
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <table class="table  table-dark">
+            <thead>
+              <tr>
+                <tr>
+                  <th># ID</th>
+                  <th>Type</th>
+                  <th>First Date</th>
+                  <th>End Date</th>
+                </tr>
+              </tr>
+            </thead>
 
-        
+          </table>
+
+        </div>
 
       </div>
 
